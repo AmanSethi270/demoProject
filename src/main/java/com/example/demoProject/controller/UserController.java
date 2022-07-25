@@ -1,11 +1,10 @@
 package com.example.demoProject.controller;
 
-import com.example.demoProject.exception.IncorrectPasswordException;
-import com.example.demoProject.exception.NoPostFoundException;
-import com.example.demoProject.exception.NoUserExitsException;
-import com.example.demoProject.exception.UserAlreadyExistsException;
+import com.example.demoProject.exception.*;
+import com.example.demoProject.model.Follower;
 import com.example.demoProject.model.Post;
 import com.example.demoProject.model.User;
+import com.example.demoProject.repository.FollowerRepository;
 import com.example.demoProject.repository.PostRepository;
 import com.example.demoProject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000/",allowCredentials ="true")
 public class UserController {
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
@@ -25,6 +25,9 @@ public class UserController {
     private UserRepository userRepository;
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private FollowerRepository followerRepository;
 
     @GetMapping("/users")
     public List<User> getAllUsers(){
@@ -66,13 +69,14 @@ public class UserController {
         userRepository.save(user);
 
         User res = new User();
-
+        res.setId(user.getId());
         res.setFirstName(user.getFirstName());
         res.setLastName(user.getLastName());
         res.setEmail(user.getEmail());
 
         return ResponseEntity.ok().body(res);
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user){
@@ -87,6 +91,7 @@ public class UserController {
              throw new IncorrectPasswordException("Incorrect Password");
          }
         User res = new User();
+        res.setId(temp.getId());
         res.setEmail(temp.getEmail());
         res.setFirstName(temp.getFirstName());
         res.setLastName(temp.getLastName());
@@ -139,6 +144,21 @@ public class UserController {
         response.put("deleted", Boolean.TRUE);
         return response;
     }
+
+//    @GetMapping("/users/id/{id}/following/followingId/{followingId}")
+//    public Follower getFollower(@PathVariable(value = "id")Long id, @PathVariable(value = "followingId") Long followingId){
+////        User user = userRepository.findById(id).orElseThrow(()-> new NoUserExitsException("No user with this id"));
+//        //      User followedUser = userRepository.findById(followingId).orElseThrow(()-> new NoUserExitsException("No user with this id"));
+//        Follower following =followerRepository.findByUserIdAndFollowingId(id,followingId);
+////
+//        if(following==null){
+//            throw new DoesNotFollowException("User is not following this user");
+//        }
+//
+//        return following;
+//
+//
+//    }
 
 
 

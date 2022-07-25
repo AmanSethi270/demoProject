@@ -1,15 +1,26 @@
 package com.example.demoProject.configuration;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
+        http.csrf().disable()
+                .cors()
+                .and()
+
+                .authorizeRequests()
+
                 .antMatchers("/").permitAll()
                 .antMatchers(HttpMethod.GET,"/users").permitAll()
                 .antMatchers(HttpMethod.GET,"/users/id/{id}").permitAll()
@@ -28,6 +39,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/followings").permitAll()
                 .antMatchers(HttpMethod.GET,"/users/id/{id}/followers").permitAll()
                 .antMatchers(HttpMethod.DELETE,"/users/id/{id}/following/followingId/{followingId}").permitAll()
-                .anyRequest().authenticated();
+
+
+
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic();
     }
+
+
 }

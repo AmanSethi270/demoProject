@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000/",allowCredentials ="true")
 public class FollowerController {
     @Autowired
     private FollowerRepository followerRepository;
+    @Autowired
     private UserRepository userRepository;
 
     @GetMapping("/followings")
